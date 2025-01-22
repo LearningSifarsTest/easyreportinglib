@@ -1,24 +1,28 @@
-const moment = require('moment');
+const log = async (variable, showOrigin=true, level=1) => {
+	/*
+	for(let i = 0; i < __stack.length; i++) {
+		helpers.log("");
+		helpers.log(i+' --');
+		helpers.log(__stack[i]);
+		helpers.log(__stack[i].getLineNumber());
+		helpers.log(__stack[i].getFunctionName());
+		helpers.log(__stack[i].getFileName());
+	}
+	*/
 
- const getRandomNumber = async(min=500, max=2000) =>{
-	return Math.floor( Math.random() * (max - min + 1) + min);
-}
+	//presumably the file/line you want is the second in the stack, so default array index is 1
+	let target = __stack[level];
+	let fileArr = target.getFileName().split('/');
+	let file = fileArr[fileArr.length - 1];
+	let fxn = target.getFunctionName();
+	let line = target.getLineNumber();
 
-const generateDOB = async (low, high)=>{
-	let age = await getRandomNumber(low, high);
-	let dayofyear = await getRandomNumber(100, 365);
-	//helpers.log(age);
-
-
-	//				years		days			hours		minutes		seconds		milliseconds
-	let subtract = 	age *		dayofyear *		24	*		60	*		60	*		1000;
-	//helpers.log(new Date(Date.now() - (subtract)));
-	let dob = moment(new Date(Date.now() - (subtract)).valueOf()).format('YYYY-MM-DD');
-	//helpers.log(dob);
-	return dob;
-}
+	if(showOrigin){
+		console.log(`++ `+file+` [`+line+`] `+fxn);
+	}
+	console.log(variable);
+};
 
 module.exports = {
-	getRandomNumber,
-	generateDOB
+	log
 }
